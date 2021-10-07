@@ -4,7 +4,7 @@
       <template slot="header">Rename wallet</template>
       <div>
         <i-input ref="nameInput" v-model="walletName" size="lg" placeholder="Name" type="name" maxlength="18" @keyup.enter="renameWallet()" />
-        <i-button block size="lg" variant="secondary" class="_margin-top-1" @click="renameWallet()">Save</i-button>
+        <i-button block size="lg" variant="secondary" class="_margin-top-1" :disabled="!isNameValid" @click="renameWallet()">Save</i-button>
       </div>
     </i-modal>
 
@@ -36,23 +36,25 @@
 
 <script lang="ts">
 import Vue from "vue";
+import VueQrcode from "vue-qrcode";
 
 export default Vue.extend({
+  components: { VueQrcode },
   data() {
     return {
       renameWalletModal: false,
-      walletName: this.$accessor.provider.name,
+      walletName: this.$store.getters["zk-account/name"],
     };
   },
   computed: {
     accountName(): string {
-      return this.$accessor.provider.name as string;
+      return this.$store.getters["zk-account/name"] as string;
     },
     accountAddress(): string {
-      return this.$accessor.provider.address ?? "";
+      return this.$store.getters["zk-account/address"];
     },
     accountZkScanUrl(): string {
-      return this.$accessor.provider.zkScanUrl as string;
+      return (this.$store.getters["zk-onboard/config"].zkSyncNetwork.explorer + "explorer/accounts/" + this.accountAddress) as string;
     },
     accountModal: {
       get(): boolean {
@@ -62,6 +64,9 @@ export default Vue.extend({
         this.$accessor.setAccountModalState(val);
         return val;
       },
+    },
+    isNameValid(): boolean {
+      return this.walletName?.length > 0;
     },
   },
   watch: {
@@ -86,8 +91,9 @@ export default Vue.extend({
   methods: {
     logout(): void {
       this.accountModal = false;
-      this.$nextTick(() => {
-        this.$accessor.wallet.logout();
+      this.$nextTick(async () => {
+        await this.$store.dispatch("zk-account/logout");
+        await this.$router.push("/");
       });
     },
     renameWalletOpen(): void {
@@ -95,7 +101,10 @@ export default Vue.extend({
       this.renameWalletModal = true;
     },
     renameWallet(): void {
-      this.$accessor.provider.setName(this.walletName);
+      if (!this.isNameValid) {
+        return;
+      }
+      this.$store.dispatch("zk-account/saveAccountName", this.walletName);
       this.renameWalletModal = false;
       this.walletName = this.accountName;
     },
