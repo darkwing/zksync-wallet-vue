@@ -1,58 +1,36 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "allowJs": true,
-    "baseUrl": "./src",
-    "checkJs": false,
-    "declaration": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "target": "ES2018",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "lib": [
-      "es2019",
-      "dom",
-      "es2019.object",
-      "esnext",
-      "esnext.asynciterable"
+      "ESNext",
+      "ESNext.AsyncIterable",
+      "DOM"
     ],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noEmit": true,
-    "noImplicitAny": true,
-    "paths": {
-      "@/*": [
-        "*"
-      ],
-      "~/*": [
-        "*"
-      ]
-    },
-    "suppressImplicitAnyIndexErrors": true,
-    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowJs": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ESNext",
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "baseUrl": "src/.",
+    "paths": {
+      "~/*": [
+        "./*"
+      ],
+      "@/*": [
+        "./*"
+      ]
+    },
     "types": [
-      "@types/node",
       "@nuxt/types",
-      "@nuxtjs/sentry",
-      "matter-dapp-module",
-      "vue-router",
-      "@types/jest",
-      "@nuxtjs/toast",
-      "web3-core/types",
-      "@inkline/inkline/types",
-      "nuxt-typed-vuex",
-      "typed-vuex"
+      "@types/node"
     ]
   },
   "exclude": [
-    "node_modules/*",
-    "dist/*",
-    ".yarn/*",
-    "public/*",
-    ".nuxt/*",
-    ".github/*",
-    "environments/*",
-    "tests/*"
+    "node_modules",
+    ".nuxt",
+    "dist"
   ]
 }

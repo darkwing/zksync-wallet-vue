@@ -1,90 +1,69 @@
-# [zkSync Wallet](https://wallet.zksync.io/)  &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/matter-labs/zksync-wallet/blob/master/LICENSE-MIT) [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue)](https://github.com/matter-labs/zksync-wallet/blob/master/LICENSE-MIT) [![npm version](https://img.shields.io/npm/v/zksync.svg?style=flat)](https://www.npmjs.com/package/zksync) [![Live on Mainnet](https://img.shields.io/badge/wallet-Live%20on%20Mainnet-blue)](https://wallet.zksync.io) [![Live on Rinkeby](https://img.shields.io/badge/wallet-Live%20on%20Rinkeby-blue)](https://rinkeby.zksync.io) [![Live on Ropsten](https://img.shields.io/badge/wallet-Live%20on%20Ropsten-blue)](https://ropsten.zksync.io)
-
-# zkSync Wallet dApp
-
----
-
-## Actual Release v.2.4.1 [`changelog`](https://github.com:matter-labs/zksync-wallet-vue/CHANGELOG.MD)
-
-Complete new version of zkWallet, built with nuxt+vuejs.
-Better architecture based on moder open source tech. Tight roadmap with many awesome features will guide developers into the amazing world of dApps and introduce true reactive 
-interaction, dialog-based UX.
- 
-It's working perfectly on [**mainnet**](https://wallet.zksync.io) | [rinkeby](https://rinkeby.zksync.io) and [ropsten](https://ropsten.zksync.io), published and ready for mass adoption.
-
-zkWallet was created to unleash the power of zkSync L2 operations and give everyone the access to L2 zkSync features on mainnet. [Learn more](https://zksync.io/)
-
-## Firebase hosting configuration
-
-> Resource targets for zksync-vue:
-
-### Hosting
-
-  1) Production-ready, deployed for the clients, users or developers:
-     * **mainnet** → [zksync-vue-mainnet](https://wallet.zksync.io)
-     * **prod-rinkeby** → [zksync-vue-rinkeby-2](https://rinkeby.zksync.io)
-  2) Beta version (w/t partial NFT-support & upcoming NFT+Swap support)
-     * **rinkeby-beta** → [beta-rinkeby-zksync-vue](https://rinkeby-beta-wallet.zksync.dev/)
-     * **prod-ropsten** → [zksync-vue-ropsten](https://ropsten.zksync.io)
-  3) Dev-only hosts: 
-     * **stage-mainnet** → [zksync-vue](https://stage.zksync.io)
-     * **dev-rinkeby** → [rinkeby-wallet-zksync](https://rinkeby-wallet-zksync.web.app/)
-
+# wallet
 
 ## Build Setup
 
-``` bash
-# install dependencies && populate .env file as of RINKEBY connection (clear install)
-$ yarn ci:clear
+```bash
+# install dependencies
+$ yarn install
 
-# serve with hot reload at localhost:3000 [rinkeby]
+# serve with hot reload at localhost:3000
 $ yarn dev
+
+# build for production and launch server
+$ yarn build
+$ yarn start
+
+# generate static project
+$ yarn generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
----
+## Special Directories
 
-## Solutions used
+You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
 
-- [Nuxt.js](https://nuxtjs.org)
-- [Rollup zkSync.io](https://zksync.io)
-- [prettier.js](https://prettier.io)
-- [eslint.js](https://eslint.org/)
-- [Vue.js](https://vuejs.org)
-- [Sentry.io](https://sentry.io)
-- [Onboarding.js](https://github.com/matter-labs-forks/onboard)
-- [Typed Vuex](https://typed-vuex.roe.dev/)
-- [Remix Icon](https://remixicon.com/)
-- [Oh, Vue Icons!](https://oh-vue-icons.netlify.app)
-- [Nuxt TypeScript](https://typescript.nuxtjs.org/)
-- [zksync.js](https://zksync.io/api/sdk/js/tutorial.html)
-- [EthersJs](https://docs.ethers.io/v5/)
+### `assets`
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
 
----
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
 
-# zkSync Ecosystem
+### `components`
 
-- [Integration Docs](https://zksync.io/dev)
-- [Available API & protocols](https://zksync.io/api/)
-- [zkWallet](https://wallet.zksync.io/)
-- [zkMint](https://mint.zksync.dev/)
-- [Alternative Withdrawal](https://withdraw.zksync.io/)
-- [zkScan](https://zkscan.io/)
-- [’out-of-gas’ issue solver ](https://withdraw.zksync.io/)
+The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
 
----
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
 
-- [Matter Labs: creators of the zkSync](https://matter-labs.io)
-- [zkSync Homepage](https://zksync.io)
+### `layouts`
 
----
-> BTW, we're hiring: [See open positions](https://matter-labs.io/#jobs)
+Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
 
-## License
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
 
-zkWallet is distributed under the terms of both the MIT license, and the Apache License (v.2.0).
 
-See [LICENSE-APACHE](LICENSE-APACHE), [LICENSE-MIT](LICENSE-MIT) for details.
+### `pages`
+
+This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
+
+### `plugins`
+
+The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
+
+### `static`
+
+This directory contains your static files. Each file inside this directory is mapped to `/`.
+
+Example: `/static/robots.txt` is mapped as `/robots.txt`.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
+
+### `store`
+
+This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
