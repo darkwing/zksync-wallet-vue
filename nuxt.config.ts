@@ -1,21 +1,20 @@
-// noinspection ES6PreferShortImport
-
-import { Configuration, NuxtConfig } from "@nuxt/types";
+import { NuxtConfig } from "@nuxt/types";
+import { NuxtOptionsLoaders, NuxtWebpackEnv } from "@nuxt/types/config/build";
 import { NuxtOptionsEnv } from "@nuxt/types/config/env";
-import { ToastAction, ToastIconPack, ToastObject, ToastOptions, ToastPosition } from "vue-toasted";
 
-import { CURRENT_APP_NAME, ETHER_NETWORK_CAPITALIZED, ETHER_PRODUCTION, GIT_REVISION_SHORT, VERSION } from "./src/plugins/build";
+import { ModuleOptions } from "@matterlabs/zksync-nuxt-core/types";
+import { Configuration } from "webpack";
 
-// @ts-ignore
-
-const srcDir = "./src/";
-
-const env = process.env.APP_ENV ?? "dev";
-const isProduction: boolean = ETHER_PRODUCTION && env === "prod";
-const pageTitle: string = CURRENT_APP_NAME.toString() ?? "zkSync Wallet";
+const appEnv: string = process.env.APP_ENV ?? "dev";
+const isDebugEnabled: boolean = appEnv === "dev";
+const isProduction: boolean = appEnv === "prod";
+const pageTitle = "zkSync Wallet";
 const pageImg = "/screenshot.jpg";
 
-const pageTitleTemplate = `${ETHER_NETWORK_CAPITALIZED} v.${VERSION}:${GIT_REVISION_SHORT}`;
+const sentryDsn = "https://de3e0dcf0e9c4243b6bd7cfbc34f6ea1@o496053.ingest.sentry.io/5569800";
+const gtagId = "GTM-ML2QDNV";
+
+const pageTitleTemplate = "%s | zkSync: secure, scalable crypto payments";
 const pageDescription =
   "A crypto wallet & gateway to layer-2 zkSync Rollup. zkSync is a trustless, secure, user-centric protocol for scaling payments and smart contracts on Ethereum";
 const pageKeywords = `zkSync, Matter Labs, rollup, ZK rollup, zero confirmation, ZKP, zero-knowledge proofs, Ethereum, crypto, blockchain, permissionless, L2, secure payments, scalable
@@ -26,7 +25,8 @@ const config: NuxtConfig = {
   telemetry: false,
   ssr: false,
   target: "static",
-  srcDir: `${srcDir}`,
+  static: true,
+  srcDir: "./src/",
   vue: {
     config: {
       productionTip: isProduction,
@@ -37,17 +37,38 @@ const config: NuxtConfig = {
     ...process.env,
   },
 
-  /*
-   ** Headers of the page
+  /**
+   * Head-placed HTML-tags / configuration of the `<meta>`
    */
   head: {
     title: pageTitle as string | undefined,
-    titleTemplate: `%s | ${pageTitleTemplate}`,
+    titleTemplate: pageTitleTemplate,
     htmlAttrs: {
       lang: "en",
       amp: "true",
     },
     meta: [
+      {
+        httpEquiv: "cache-control",
+        property: "cache-control",
+        content: "no-cache , no-store, must-revalidate",
+      },
+      {
+        httpEquiv: "expires",
+        content: "0",
+        property: "expires",
+      },
+      /**
+       * UX / UI settings
+       */
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, minimum-scale=1.0, maximum-scale=1.0" },
+
+      /**
+       * Page meta:
+       * - SEO tags (keywords, description, author)
+       * - OpenGraph tags (thumbnail,
+       */
       {
         hid: "keywords",
         name: "keywords",
@@ -118,9 +139,6 @@ const config: NuxtConfig = {
         property: "og:image:alt",
         content: pageTitle,
       },
-
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "msapplication-TileImage",
         name: "msapplication-TileImage",
@@ -142,44 +160,54 @@ const config: NuxtConfig = {
     color: "#8c8dfc",
     continuous: true,
   },
-  /*
-   ** Global CSS
+
+  /**
+   * Single-entry global-scope scss
    */
   css: ["@/assets/style/main.scss"],
-  /*
-   ** Plugins to load before mounting the App
+  /**
+   * Plugins that should be loaded before the mounting
    */
-  plugins: ["@/plugins/icons", "@/plugins/main"],
+  plugins: ["@/plugins/icons", "@/plugins/filters", "@/plugins/restoreSession", { src: "@/plugins/analytics", mode: "client" }],
+
+  styleResources: {
+    scss: ["@/assets/style/vars/_variables.scss"],
+  },
 
   router: {
-    middleware: ["wallet"],
+    middleware: ["auth"],
   },
   /*
    ** Nuxt.js dev-modules
    */
   buildModules: [
-    "nuxt-build-optimisations",
+    // https://go.nuxtjs.dev/typescript
+    "@nuxt/typescript-build",
+    // https://go.nuxtjs.dev/stylelint
     "@nuxtjs/style-resources",
+    ["@nuxtjs/dotenv", { path: __dirname }],
     "@nuxtjs/google-fonts",
     "nuxt-typed-vuex",
-    ["@nuxtjs/dotenv", { path: __dirname }],
     [
-      "@nuxt/typescript-build",
-      {
-        typescript: {
-          typeCheck: {
-            async: true,
-            stylelint: {
-              config: [".stylelintrc"],
-              files: "src/**/*.scss",
-            },
-            eslint: {
-              config: ["tsconfig-eslint.json", ".eslintrc.js"],
-              files: "@/**/*.{ts,vue,js}",
-            },
-            files: "@/**/*.{ts,vue,js}",
-          },
+      "@matterlabs/zksync-nuxt-core",
+      <ModuleOptions>{
+        network: process.env.ZK_NETWORK,
+        apiKeys: {
+          FORTMATIC_KEY: process.env.APP_FORTMATIC,
+          PORTIS_KEY: process.env.APP_PORTIS,
+          /**
+           * Added for all environments to reduce complexity
+           */
+          INFURA_KEY: "560464419d33486ab1713d61ac9f1d82",
         },
+        onboardConfig: {
+          APP_NAME: pageTitle,
+          /**
+           * Added for all environments to reduce complexity
+           */
+          APP_ID: "764666de-bcb7-48a6-91fc-75e9dc086ea0",
+        },
+        restoreNetwork: true,
       },
     ],
   ],
@@ -187,71 +215,64 @@ const config: NuxtConfig = {
   /*
    ** Nuxt.js modules
    */
-  modules: ["@nuxtjs/dotenv", "@nuxt/http", "@nuxtjs/toast", "@nuxtjs/google-gtag", "@inkline/nuxt", "@nuxtjs/sentry"],
-  toast: <ToastOptions>{
-    singleton: true,
-    keepOnHover: true,
-    position: "bottom-right" as ToastPosition,
-    duration: 4000,
-    className: "zkToastMain",
-    iconPack: "fontawesome" as ToastIconPack,
-    action: <ToastAction>{
-      text: "Close",
-      class: "zkToastActionClose",
-      icon: "fa-times-circle",
-      onClick: (_e: Event, toastObject: ToastObject): void => {
-        toastObject.goAway(100);
-      },
-    },
-  },
+  modules: ["@nuxtjs/google-gtag", "@inkline/nuxt", "@nuxtjs/sentry"],
+
+  /**
+   * @deprecated Starting from the v.3.0.0 ```inkline/nuxt``` support will be dropped in favour to ```@tailwindcss`` / ```@tailwindUI```
+   */
   inkline: {
     config: {
       autodetectVariant: true,
     },
   },
-  styleResources: {
-    scss: ["@/assets/style/vars/*.scss"],
-  },
   sentry: {
-    dsn: process.env.SENTRY_DSN,
+    dsn: sentryDsn,
     disableServerSide: true,
     config: {
+      debug: isDebugEnabled,
       tracesSampleRate: 1.0,
-      environment: env === "prod" ? "production" : env === "dev" ? "development" : env,
+      environment: isProduction ? "production" : appEnv === "dev" ? "development" : appEnv,
     },
   },
   "google-gtag": {
-    id: process.env.GTAG_ID,
+    id: gtagId,
     config: {
       anonymize_ip: true, // anonymize IP
       send_page_view: true, // might be necessary to avoid duplicated page track on page reload
     },
-    debug: env !== "prod", // enable to track in dev mode
+    debug: isDebugEnabled, // enable to track in dev mode
     disableAutoPageTrack: false, // disable if you don't want to track each page route with router.afterEach(...).
   },
   /*
    ** Build configuration
    */
   build: {
+    filenames: { chunk: () => "[name]_Y2ZjItY_[contenthash].js" },
+    cache: false,
+    cssSourceMap: true,
     babel: {
       compact: true,
     },
-    transpile: ["oh-vue-icons"], // [v.2.4.0]: oh-vue-icons package
-    hardSource: isProduction,
+    corejs: 3,
     ssr: false,
-    extend: (config: Configuration) => {
+    extractCSS: {
+      ignoreOrder: true,
+    },
+    optimization: {
+      removeAvailableModules: true,
+      flagIncludedChunks: true,
+      mergeDuplicateChunks: true,
+      splitChunks: {
+        chunks: "async",
+        maxSize: 200000,
+      },
+    },
+    transpile: ["oh-vue-icons", "@inkline/inkline"], // [v.2.4.0]: oh-vue-icons package
+    extend: (config: Configuration, _ctx: { loaders: NuxtOptionsLoaders } & NuxtWebpackEnv) => {
       config.node = {
         fs: "empty",
       };
     },
-  },
-  buildOptimisations: {
-    profile: env !== "prod" ? "risky" : "experimental",
-    features: {
-      postcssNoPolyfills: isProduction,
-      hardSourcePlugin: isProduction,
-    },
-    esbuildLoaderOptions: "esnext",
   },
   googleFonts: {
     prefetch: true,
@@ -265,7 +286,8 @@ const config: NuxtConfig = {
   },
   generate: {
     dir: "public",
-    devtools: env !== "prod",
+    cache: false,
+    devtools: !isProduction,
   },
 };
 export default config;

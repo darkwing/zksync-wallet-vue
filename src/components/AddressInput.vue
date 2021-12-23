@@ -1,7 +1,7 @@
 <template>
   <div class="addressInput">
     <div class="walletContainer inputWallet" :class="{ error: error }" @click.self="focusInput()">
-      <lazy-user-img v-if="isValid" :wallet="inputtedWallet" />
+      <user-img v-if="isValid" :wallet="inputtedWallet" />
       <div v-else class="userImgPlaceholder userImg"></div>
       <!--suppress HtmlFormInputWithoutLabel -->
       <input
@@ -9,12 +9,13 @@
         v-model="inputtedWallet"
         autocomplete="none"
         class="walletAddress"
-        maxlength="45"
+        maxlength="100"
         data-cy="address_block_wallet_address_input"
         placeholder="0x address"
         spellcheck="false"
         type="text"
         @keyup.enter="$emit('enter')"
+        @change="($event) => $emit('change', $event)"
       />
       <transition name="fadeFast">
         <div v-if="error" class="errorText" data-cy="address_block_error_message">{{ error }}</div>
@@ -24,10 +25,9 @@
 </template>
 
 <script lang="ts">
-import { DecimalBalance } from "@/types/lib";
-
-import utils from "@/plugins/utils";
 import Vue, { PropOptions } from "vue";
+import { Address } from "zksync/build/types";
+import { validateAddress } from "@matterlabs/zksync-nuxt-core/utils";
 
 export default Vue.extend({
   props: {
@@ -35,7 +35,7 @@ export default Vue.extend({
       type: String,
       default: "",
       required: false,
-    } as PropOptions<DecimalBalance>,
+    } as PropOptions<Address>,
   },
   data() {
     return {
@@ -44,7 +44,7 @@ export default Vue.extend({
   },
   computed: {
     isValid(): boolean {
-      return utils.validateAddress(this.inputtedWallet);
+      return validateAddress(this.inputtedWallet);
     },
     error(): string {
       if (this.inputtedWallet && !this.isValid) {
@@ -56,7 +56,7 @@ export default Vue.extend({
   },
   watch: {
     inputtedWallet(val) {
-      const trimmed = val.trim();
+      const trimmed = val.trim().replace("zksync:", "");
       this.inputtedWallet = trimmed;
       if (val !== trimmed) {
         return;

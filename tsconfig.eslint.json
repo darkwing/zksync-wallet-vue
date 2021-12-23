@@ -8,7 +8,13 @@
     ".eslintrc.js"
   ],
   "exclude": [
-    "tests/*",
+    "node_modules**",
+    ".nuxt**",
+    ".idea**",
+    ".ide-setup**",
+    ".firebase**",
+    ".github**",
+    "tests**"
   ],
   "compilerOptions": {
     "lib": [

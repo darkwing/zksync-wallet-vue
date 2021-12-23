@@ -16,9 +16,12 @@ export default Vue.extend({
     };
   },
   computed: {
-    walletAddress(): Address | undefined {
-      return this.$accessor.account.address;
+    walletAddress(): Address {
+      return this.$store.getters["zk-account/address"];
     },
+  },
+  mounted() {
+    this.$analytics.track("visit_home");
   },
   methods: {
     openAccountModal(): void {

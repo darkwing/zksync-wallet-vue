@@ -18,7 +18,7 @@ body.inkline.-light .defaultLayout {
   .tileBlock {
     background: $white;
 
-    .tileHeadline .returnBtn {
+    .tileHeadline {
       i, .ov-icon {
         color: $black;
       }
@@ -35,7 +35,7 @@ body.inkline.-dark .defaultLayout {
   .tileBlock {
     background: $darkViolet;
 
-    .tileHeadline .returnBtn {
+    .tileHeadline {
       i, .ov-icon {
         color: $white;
       }
@@ -72,8 +72,7 @@ input.form-input.-prefixed:focus {
 }
 
 .iconInfo {
-  margin: 2px 0;
-  margin-left: 10px;
+  margin: 2px 0 2px 10px;
   font-size: 11px;
   line-height: 28px;
   text-align: center;

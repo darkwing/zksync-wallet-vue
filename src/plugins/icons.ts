@@ -10,14 +10,14 @@
  * @uses remixicon,oh-vue-icons
  * @link https://oh-vue-icons.netlify.app
  */
-import { Context, Plugin } from "@nuxt/types";
-import { Route } from "@nuxt/vue-app";
+import { Plugin } from "@nuxt/types";
 import OhVueIcon from "oh-vue-icons/dist/v2/icon.es";
+import { MdVpnkeyRound } from "oh-vue-icons/icons/md";
+import { CoEthereum } from "oh-vue-icons/icons/co";
 import {
-  BiDownload,
   RiGalleryLine,
-  IoWalletOutline,
   RiAddCircleFill,
+  RiErrorWarningLine,
   RiAddFill,
   RiAddLine,
   RiArrowDownSLine,
@@ -52,28 +52,29 @@ import {
   RiQuestionFill,
   RiQuestionMark,
   RiReservedFill,
+  RiReservedLine,
   RiRestartLine,
   RiSearchLine,
   RiSendPlaneFill,
   RiSunFill,
   RiWalletLine,
   RiWifiLine,
-} from "oh-vue-icons/icons";
+  RiFileLine,
+  RiArrowRightUpLine,
+} from "oh-vue-icons/icons/ri";
 import Vue from "vue";
 
 /**
  * Special plugin to implement oh-awesome-icons into zkDapp
- * @param {{(status: number, path: string, query?: Route["query"]): void, (path: string, query?: Route["query"]): void, (location: Location): void, (status: number, location: Location): void}} redirect
- * @param {Route} route
  */
-const iconsPlugin: Plugin = ({ route }: Context) => {
+const iconsPlugin: Plugin = () => {
   OhVueIcon.add(
+    MdVpnkeyRound,
     RiGalleryLine,
     RiInformationFill,
     RiArrowUpSLine,
     RiArrowDownSLine,
-    BiDownload,
-    IoWalletOutline,
+    RiErrorWarningLine,
     RiCloseCircleFill,
     RiAddCircleFill,
     RiAtLine,
@@ -108,12 +109,16 @@ const iconsPlugin: Plugin = ({ route }: Context) => {
     RiAddLine,
     RiPencilFill,
     RiReservedFill,
+    RiReservedLine,
     RiContactsLine,
     RiDeleteBinLine,
     RiWifiLine,
+    RiFileLine,
     RiLightbulbLine,
     RiMoonFill,
     RiSunFill,
+    CoEthereum,
+    RiArrowRightUpLine,
   ); // Used icons (to reduce bundle-size)
 
   Vue.component("VIcon", OhVueIcon);

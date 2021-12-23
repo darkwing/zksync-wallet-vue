@@ -23,7 +23,7 @@ footer.layout-footer {
   @media screen and (max-width: $mobile) {
     position: fixed;
     bottom: 0;
-    height: 4.5rem;
+    height: 2.5rem;
     width: 100%;
     margin-bottom: 0.5rem;
 
@@ -51,6 +51,7 @@ footer.layout-footer {
 
   a {
     font-size: $fontSizeRegular;
+    color: $violet;
 
     @media (max-width: $mobile) {
       font-size: $fontSizeRegular;
@@ -250,14 +251,6 @@ button.floating-on-mobile {
 }
 
 @media (max-width: $mobile) {
-  .badge.system-info .popover-wrapper.system-env-popover .popover {
-    display: block !important;
-    position: fixed;
-    top: 1rem;
-    width: 80vw;
-    left: 10vw;
-  }
-
   .modal.-light > .footer {
     .badge.system-info {
       a.revision {

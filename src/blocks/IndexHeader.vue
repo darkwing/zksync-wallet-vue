@@ -5,7 +5,7 @@
         <i-row class="_display-flex _justify-content-between _flex-nowrap">
           <i-column>
             <transition name="fade">
-              <block-logo :is-zk-sync-logo="false" />
+              <block-logo :is-zk-sync-logo="true" />
             </transition>
           </i-column>
           <i-column class="_padding-right-0">
@@ -30,7 +30,7 @@
       <i-container>
         <i-row>
           <i-column :xs="12" :md="4" class="_padding-left-0 desktopOnly">
-            <block-logo :is-zk-sync-logo="false" />
+            <block-logo :is-zk-sync-logo="true" />
           </i-column>
           <i-column :xs="12" :md="4" class="_padding-y-0">
             <div class="linksContainer">
@@ -64,76 +64,37 @@
 </template>
 
 <script lang="ts">
-import { ETHER_NETWORK_NAME } from "@/plugins/build";
 import Vue from "vue";
+import { ZkConfig } from "@matterlabs/zksync-nuxt-core/types";
 
 interface DropdownOption {
   name: string;
   link: string;
 }
 
-const dropdownLinks = {
-  zkLink: {
-    mainnet: "https://link.zksync.io/",
-    rinkeby: "https://link.zksync.io/",
-    ropsten: "https://link.zksync.io/",
-  },
-  zkScan: {
-    mainnet: "https://zkscan.io/",
-    rinkeby: "https://rinkeby.zkscan.io",
-    ropsten: "https://ropsten.zkscan.io",
-  },
-  withdrawal: {
-    mainnet: "https://withdraw.zksync.io",
-    rinkeby: "https://withdraw.zksync.io",
-    ropsten: "https://withdraw.zksync.io",
-  },
-  zkCheckout: {
-    mainnet: "https://checkout.zksync.io",
-    rinkeby: "https://checkout-rinkeby.zksync.io",
-    ropsten: "https://checkout-ropsten.zksync.io",
-  },
-  zkMint: {
-    mainnet: "https://mint.zksync.dev",
-    rinkeby: "https://mint.zksync.dev",
-    ropsten: "https://mint-ropsten.zksync.dev",
-  },
-};
-
-function getLinkItem(type: string): string {
-  if (dropdownLinks[type][ETHER_NETWORK_NAME]) {
-    return dropdownLinks[type][ETHER_NETWORK_NAME];
-  } else {
-    return dropdownLinks[type].mainnet;
-  }
-}
-
 export default Vue.extend({
   name: "IndexHeader",
   data() {
+    const config: ZkConfig = this.$store.getters["zk-onboard/config"];
     return {
       opened: false,
       dropdownOpened: false,
       dropdownOptions: <DropdownOption[]>[
         {
           name: "zkScan",
-          link: getLinkItem("zkScan"),
+          link: config.zkSyncNetwork.explorer,
         },
         {
           name: "zkLink",
-          link: getLinkItem("zkLink"),
+          link: config.zkSyncNetwork.tools.link,
         },
         {
           name: "Alternative Withdrawal",
-          link: getLinkItem("withdrawal"),
-        },
-        {
-          name: "zkCheckout",
-          link: getLinkItem("zkCheckout"),
+          link: config.zkSyncNetwork.tools.withdrawal,
         },
         {
           name: "zkMint",
-          link: getLinkItem("zkMint"),
+          link: config.zkSyncNetwork.tools.mint,
         },
       ],
     };
